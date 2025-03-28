@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  mongodb:
+    hostname: mongodb
+    image: mongodb/mongodb-atlas-local
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=admin  # Ensure this is set
+
+   
+    ports:
+      - "27019:27017"
+    volumes:
+      - data:/data/db
+      - config:/data/configdb
+      - ./init:/docker-entrypoint-initdb.d  # Mount 'init' folder to MongoDB
+    command: [ "mongod", "--bind_ip_all" ]  # Ensure MongoDB starts properly
+
+volumes:
+  data:
+  config:
