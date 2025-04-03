@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+bcrypt==4.0.1
+passlib
+pyjwt
+motor
+pydantic
+python-dotenv
+
+pydantic_settings
+
+cloudinary==1.43.0
+python-multipart

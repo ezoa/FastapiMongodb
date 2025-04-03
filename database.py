@@ -1,13 +1,27 @@
-import os
 from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import ASCENDING
 
-# Define MongoDB connection URL
-DB_URL = "mongodb://user:pass@mongodb:27017"
-DB_NAME = "carBackend"
+from dotenv import load_dotenv
+import os
 
-# Connect to MongoDB
-client = AsyncIOMotorClient(DB_URL)
-database = client[DB_NAME]
+#Load .env
 
-async def get_database():
-    return database
+load_dotenv()
+
+
+# Get Mongodb
+
+
+MONGO_URI= os.getenv("MONGO_URI")
+DB_NAME= os.getenv("DB_NAME")
+
+
+#INitialize  MongoDB connection
+
+
+client= AsyncIOMotorClient(MONGO_URI)
+database=client[DB_NAME]
+collection=database["users"]
+
+async def init_db():
+    await collection.create_index([("email", ASCENDING)], unique=True)
