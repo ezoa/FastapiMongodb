@@ -13,9 +13,19 @@ from config import BaseConfig
 from routers.cars import router as cars_router
 from routers.users import router as users_router 
 
+import cloudinary
+
 
 settings= BaseConfig()
 
+
+
+
+cloudinary.config(
+    cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+    api_key=settings.CLOUDINARY_API_KEY,
+    api_secret=settings.CLOUDINARY_SECRET_KEY,
+)
 
 @asynccontextmanager
 # async def lifespan(app:FastAPI):

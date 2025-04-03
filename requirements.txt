@@ -9,4 +9,5 @@ python-dotenv
 
 pydantic_settings
 
-
+cloudinary==1.43.0
+python-multipart
