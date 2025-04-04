@@ -68,6 +68,7 @@ async def add_car_with_picture(
     km: int = Form("km"),
     price: int = Form("price"),
     picture: UploadFile = File(...),
+    user:str=Depends(auth_handler.auth_wrapper),
 ):
     try:
 
@@ -78,7 +79,7 @@ async def add_car_with_picture(
         picture_url= cloudinary_image["url"]
 
 
-        car= CarModel(brand=brand, make=make, year=year, cm3=cm3, km=km, price=price, picture_url=picture_url)
+        car= CarModel(brand=brand, make=make, year=year, cm3=cm3, km=km, price=price, picture_url=picture_url, user_id=user["user_id"])
         cars= request.app.db["cars"]
         document= car.model_dump(by_alias= True, exclude=["id"])
         inserted= await cars.insert_one(document)

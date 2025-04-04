@@ -53,7 +53,7 @@ async def lifespan(app:FastAPI):
 
 app= FastAPI(lifespan=lifespan)
 app.include_router(cars_router, prefix="/cars", tags=["cars"])
-
+app.include_router(users_router,prefix="users",tags=["users"])
 @app.get("/")
 async def get_root():
     return {"Message":"Root working!"}

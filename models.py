@@ -10,24 +10,25 @@ PyObjectId = Annotated[
 class CarModel(BaseModel):
 
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
-    # brand: str = Field(...)
-    # make: str = Field(...)
+    brand: str = Field(...)
+    make: str = Field(...)
     year: int = Field(..., gt=1970, lt=2030)
     cm3: int = Field(..., gt=0, lt=5000)
     km: int = Field(..., gt=0, lt=500000)
     price: int = Field(..., gt=0, lt=100000)
+    user_id: str = Field(...)
     picture_url: Optional[str] = Field(...)
 
 
-    # @field_validator("brand")
-    # @classmethod
-    # def check_brand_case(cls, v: str) -> str:
-    #     return v.title()
+    @field_validator("brand")
+    @classmethod
+    def check_brand_case(cls, v: str) -> str:
+        return v.title()
 
-    # @field_validator("make")
-    # @classmethod
-    # def check_make_case(cls, v: str) -> str:
-    #     return v.title()
+    @field_validator("make")
+    @classmethod
+    def check_make_case(cls, v: str) -> str:
+        return v.title()
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -88,3 +89,19 @@ class CarCollection(BaseModel):
 class  CarCollectionPagination(CarCollection):
     page: int = Field(ge=1, default=1)
     has_more:bool
+
+#############################################USERMODEL#################################
+
+class UserModel(BaseModel):
+    id: Optional[PyObjectId] = Field(alias="_id",default=None)
+    username: str = Field(..., min_length=3, max_length=15)
+    password: str = Field(...)
+
+
+class LoginModel(BaseModel):
+    username: str = Field(...)
+    password: str = Field(...)
+
+class CurrentUserModel(BaseModel):
+    id: PyObjectId= Field(alias="_id", default=None)
+    username:str = Field(...,min_length=3, max_length=15)
