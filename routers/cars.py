@@ -17,7 +17,6 @@ from pymongo import ReturnDocument
 import cloudinary
 from cloudinary import uploader
 from fastapi.responses import JSONResponse
-
 from pathlib import Path
 
 router = APIRouter()

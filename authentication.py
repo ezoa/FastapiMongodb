@@ -27,8 +27,8 @@ class AuthHandler:
 
             "exp": datetime.datetime.now(datetime.timezone.utc)+datetime.timedelta(minutes=30),
             "iat": datetime.datetime.now(datetime.timezone.utc),
-            # "sub": {"user_id": user_id, "username": username},
-            "sub": f"{user_id}_{username}",
+            "sub": {"user_id": user_id, "username": username},
+            # "sub": f"{user_id}_{username}",
 
 
         }

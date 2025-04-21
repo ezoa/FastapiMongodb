@@ -41,12 +41,20 @@ async def register(request: Request, newUser: LoginModel = Body(...)) -> UserMod
 
 @router.post("/login", response_description="Login user")
 
-async def login(request: Request, loginUser: LoginModel = Body(...)) ->str:
+async def login(request: Request, loginUser: LoginModel = Body(...)):
+    #first get the connexion element or we can put it in the depends
     users=request.app.db["users"]
+    #find the user
     user= await users.find_one({"username": loginUser.username})
+    #check if the user password or the user variable is empty or different
     check_password = auth_handler.verify_password(loginUser.password, user["password"])
-    if user is None or check_password is False:
+    
+    if user is None:
         raise HTTPException(status_code=401, detail="Invalid username and / or password")
+    
+    if not check_password:
+        raise HTTPException(status_code=401, detail="Invalid username and / or password")
+    #if every thing is ok generate the token
     token = auth_handler.encode_token(str(user["_id"]),user["username"])
     response=JSONResponse(content={
 
@@ -54,6 +62,10 @@ async def login(request: Request, loginUser: LoginModel = Body(...)) ->str:
         "username":user["username"]
     })
     return response
+    # return {
+    #     "token":token,
+    #     "username":user["username"]
+    # }
 
 
 @router.get("/me", response_description=" Logged in user data", response_model=CurrentUserModel)
@@ -62,5 +74,8 @@ async def me (request:Request, response:Response, user_data=Depends(auth_handler
     currentUser = await users.find_one(
         {"_id":ObjectId(user_data["user_id"])}
     )
+
+    if not currentUser:
+        return HTTPException(status_code=401, detail="User does not exist")
 
     return currentUser
