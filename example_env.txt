@@ -1,0 +1,13 @@
+MONGO_INITDB_ROOT_USERNAME=user
+MONGO_INITDB_ROOT_PASSWORD=pass
+
+# MONGO_URI=mongodb://root:password@localhost:27017
+# DB_NAME=mydatabase
+
+DB_URL=mongodb://root:password@localhost:27017  # This is your MongoDB connection string
+DB_NAME=mydatabase 
+
+
+CLOUDINARY_SECRET_KEY=Een7HKLy-rcW1D3x4H9S3jilJMk
+CLOUDINARY_API_KEY=288583514742316
+CLOUDINARY_CLOUD_NAME=dxmg4k669
