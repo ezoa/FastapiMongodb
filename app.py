@@ -52,7 +52,7 @@ async def lifespan(app:FastAPI):
     print("shutting down Mongodb connection")
     app.client.close()
 
-app= FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
 

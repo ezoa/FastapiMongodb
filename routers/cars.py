@@ -273,8 +273,9 @@ async def update_car(
 
 @router.delete("/{id}", response_description="Delete a car")
 async def delete_car(
-    id: str, request: Request, user=Depends(auth_handler.auth_wrapper)
+    id: str, request: Request
 ):
+    # id: str, request: Request, user=Depends(auth_handler.auth_wrapper)
     # async def delete_car(id:str, request:Request):
     try:
         id = ObjectId(id)
