@@ -4,8 +4,8 @@ from fastapi import APIRouter, Body, Request, status
 from bson import ObjectId
 from fastapi import APIRouter, Body, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
-
-from authentication import AuthHandler
+from typing import Annotated
+from authentication import AuthHandler, oauth2_scheme
 from models import CurrentUserModel, LoginModel, UserModel
 
 
@@ -41,7 +41,7 @@ async def register(request: Request, newUser: LoginModel = Body(...)) -> UserMod
 
 @router.post("/login", response_description="Login user")
 
-async def login(request: Request, loginUser: LoginModel = Body(...)):
+async def login(request: Request, loginUser: LoginModel = Body(...))->str:
     #first get the connexion element or we can put it in the depends
     users=request.app.db["users"]
     #find the user
@@ -55,7 +55,9 @@ async def login(request: Request, loginUser: LoginModel = Body(...)):
     if not check_password:
         raise HTTPException(status_code=401, detail="Invalid username and / or password")
     #if every thing is ok generate the token
-    token = auth_handler.encode_token(str(user["_id"]),user["username"])
+    # token = auth_handler.encode_token(str(user["_id"]),user["username"])
+    data={"sub":str(user["_id"]), "username":user["username"]}
+    token = auth_handler.create_encode_token(data)
     response=JSONResponse(content={
 
         "token":token,
@@ -69,13 +71,29 @@ async def login(request: Request, loginUser: LoginModel = Body(...)):
 
 
 @router.get("/me", response_description=" Logged in user data", response_model=CurrentUserModel)
-async def me (request:Request, response:Response, user_data=Depends(auth_handler.auth_wrapper)):
+# async def me (request:Request,token: Annotated[str, Depends(oauth2_scheme)]):
+async def me (request:Request,user_data=Depends(auth_handler.auth_wrapper)): 
+   
+    # user_data=Depends(auth_handler.auth_wrapper)
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     users=request.app.db["users"]
+    # payload=auth_handler.decode_token(token)
+    # user_id=payload.get("sub")
+    user_id=user_data.get("sub")
+    if user_id is None:
+        raise credentials_exception
+    
+
     currentUser = await users.find_one(
-        {"_id":ObjectId(user_data["user_id"])}
+        # {"_id":ObjectId(user_data["user_id"])}
+        {"_id":ObjectId(user_id)}
     )
 
-    if not currentUser:
-        return HTTPException(status_code=401, detail="User does not exist")
+    # if not currentUser:
+    #     return HTTPException(status_code=401, detail="User does not exist")
 
     return currentUser
